@@ -5,13 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Car;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Auth;
 
 class CarController extends Controller
 {
     public function index(){
         $cars = Car::all();
 
-        return view('cars.index', ['cars']);
+        return view('cars.index', compact('cars'));
     }
 
     public function create(){
@@ -19,18 +20,19 @@ class CarController extends Controller
     }
 
     public function store(Request $request){
-        $request -> validate([
-            'number' => ['required', 'string', 'max:255'],
+        $data = $request -> validate([
+            'number' => 'string',
             'mark' => ['required', 'string', 'max:255'],
             'model' => ['required', 'string', 'max:255'],
         ]);
 
         Car::create([
-            'number' => $request->number,
-            'mark' => $request->mark,
-            'model' => $request->model,
+            'number' => $data['number'],
+            'mark' => $data['mark'],
+            'model' => $data['model'],
+            'user_id' => Auth::user()->id,
         ]);
 
-        return Redirect::route('profile.edit');
+        return redirect()->route('car.index');
     }
 }

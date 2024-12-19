@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CarController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RepairRequestController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,9 +20,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -30,7 +29,11 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/car', [CarController::class, 'index'])->name('car.index');
     Route::get('/car/create', [CarController::class, 'create'])->name('car.create');
-    Route::get('/car/store', [CarController::class, 'store'])->name('car.store');
+    Route::post('/car/store', [CarController::class, 'store'])->name('car.store');
+
+    Route::get('/', [RepairRequestController::class, 'index'])->name('dashboard');
+    Route::get('/request/create', [RepairRequestController::class, 'create'])->name('request.create');
+    Route::post('/request/store', [RepairRequestController::class, 'store'])->name('request.store');
 });
 
 require __DIR__.'/auth.php';
